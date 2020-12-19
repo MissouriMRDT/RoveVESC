@@ -1,7 +1,7 @@
 #ifndef _VESCUART_h
 #define _VESCUART_h
 
-#include <Arduino.h>
+#include <Energia.h>
 #include "datatypes.h"
 #include "buffer.h"
 #include "crc.h"
