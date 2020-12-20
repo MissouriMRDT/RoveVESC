@@ -7,26 +7,48 @@
 */
 
 #include <VescUart.h>
+#include "RoveComm.h"
+
 
 /** Initiate VescUart class */
 VescUart UART;
+
+/** Initiate RoveComm class */
+RoveCommEthernet RoveComm;
+
+/** Initiate RoveComm packet */
+rovecomm_packet packet;
+
+float desiredRPM = 5000; /** The current in amps */
+
+//declare the Ethernet Server in the top level sketch with the requisite port ID any time you want to use RoveComm
+EthernetServer TCPServer(RC_ROVECOMM_ETHERNET_DRIVE_LIGHTING_BOARD_PORT);
 
 void setup() {
 
   /** Setup Serial port to display data */
   Serial.begin(9600);
 
-  /** Setup UART port (Serial1 on Atmega32u4) */
-  Serial1.begin(19200);
+  /** Setup UART port (Serial2 on Atmega32u4) */
+  Serial2.begin(115200);
   
-  while (!Serial) {;}
+  while (!Serial2) {;}
 
   /** Define which ports to use as UART */
-  UART.setSerialPort(&Serial1);
+  UART.setSerialPort(&Serial2);
+
+
+  // Set up RoveComm with testing IP
+  RoveComm.begin(42, &TCPServer);
+
+  // Debug over USB
+  //UART.setDebugPort(&Serial);
 }
 
 void loop() {
   
+  packet = RoveComm.read();
+
   /** Call the function getVescValues() to acquire data from VESC */
   if ( UART.getVescValues() ) {
 
@@ -41,5 +63,15 @@ void loop() {
     Serial.println("Failed to get data!");
   }
 
+  switch(packet.data_id)
+  {
+    case RC_DRIVEBOARD_DRIVELEFTRIGHT_DATAID:
+      //cast the packet to the correct data type
+      int16_t* speeds = new int16_t(2);
+      speeds = (int16_t*)packet.data;
+      //Serial.println((float)speeds[0]);
+      UART.setRPM((float)speeds[0]); 
+      break;
+  }
   delay(50);
 }
