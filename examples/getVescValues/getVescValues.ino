@@ -39,7 +39,8 @@ void setup() {
 
 
   // Set up RoveComm with testing IP
-  RoveComm.begin(42, &TCPServer);
+  RoveComm.begin(RC_DRIVEBOARD_FOURTHOCTET, &TCPServer);
+  delay(100);
 
   // Debug over USB
   //UART.setDebugPort(&Serial);
@@ -62,14 +63,14 @@ void loop() {
   {
     Serial.println("Failed to get data!");
   }
-
+  
   switch(packet.data_id)
   {
     case RC_DRIVEBOARD_DRIVELEFTRIGHT_DATAID:
       //cast the packet to the correct data type
-      int16_t* speeds = new int16_t(2);
+      int16_t* speeds;
       speeds = (int16_t*)packet.data;
-      //Serial.println((float)speeds[0]);
+      Serial.println(speeds[0]);
       UART.setRPM((float)speeds[0]); 
       break;
   }
