@@ -9,7 +9,8 @@
 #include <VescUart.h>
 #include "RoveComm.h"
 
-
+#define DRIVE_MIN_RPM           -10000
+#define DRIVE_MAX_RPM           10000
 /** Initiate VescUart class */
 VescUart UART;
 VescUart UART3;
@@ -17,6 +18,8 @@ VescUart UART4;
 VescUart UART5;
 VescUart UART6;
 VescUart UART7;
+
+int16_t motorSpeeds[4];
 
 /** Initiate RoveComm class */
 RoveCommEthernet RoveComm;
@@ -66,13 +69,12 @@ void loop() {
   packet = RoveComm.read();
 
   /** Call the function getVescValues() to acquire data from VESC */
-  if ( UART.getVescValues() ) {
+  if ( UART5.getVescValues() ) {
 
-    Serial.println(UART.data.rpm);
-    Serial.println(UART.data.inpVoltage);
-    Serial.println(UART.data.ampHours);
-    Serial.println(UART.data.tachometerAbs);
-
+    Serial.println(UART5.data.rpm);
+    Serial.println(UART5.data.inpVoltage);
+    Serial.println(UART5.data.ampHours);
+    Serial.println(UART5.data.tachometerAbs);
   }
   else
   {
@@ -86,12 +88,23 @@ void loop() {
       int16_t* speeds;
       speeds = (int16_t*)packet.data;
       Serial.println(speeds[0]);
-      UART.setRPM((float)speeds[0]); 
-      UART3.setRPM((float)speeds[0]); 
-      UART4.setRPM((float)speeds[0]); 
-      UART5.setRPM((float)speeds[0]); 
-      UART6.setRPM((float)speeds[0]); 
-      UART7.setRPM((float)speeds[0]); 
+      int16_t leftspeed =  map(speeds[0],-1000,1000,DRIVE_MIN_RPM,DRIVE_MAX_RPM);
+      int16_t rightspeed = map(speeds[1],-1000,1000,DRIVE_MIN_RPM,DRIVE_MAX_RPM);
+
+      Serial.println(leftspeed);
+      Serial.println(rightspeed);
+
+      motorSpeeds[0] = leftspeed;   //LF
+      motorSpeeds[1] = leftspeed;   //LR
+      motorSpeeds[2] = rightspeed;  //RF
+      motorSpeeds[3] = rightspeed;  //RR
+
+      UART.setRPM((float)motorSpeeds[0]); 
+      UART3.setRPM((float)motorSpeeds[1]); 
+      UART4.setRPM((float)motorSpeeds[1]); 
+      UART5.setRPM((float)motorSpeeds[2]); 
+      UART6.setRPM((float)motorSpeeds[2]); 
+      UART7.setRPM((float)motorSpeeds[3]); 
       break;
   }
   delay(50);
