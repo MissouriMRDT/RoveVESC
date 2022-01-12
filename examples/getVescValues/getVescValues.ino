@@ -9,8 +9,8 @@
 #include <VescUart.h>
 #include "RoveComm.h"
 
-#define DRIVE_MIN_RPM           -10000
-#define DRIVE_MAX_RPM           10000
+#define DRIVE_MIN_RPM           -5000
+#define DRIVE_MAX_RPM           5000
 /** Initiate VescUart class */
 VescUart UART;
 VescUart UART3;
@@ -69,12 +69,16 @@ void loop() {
   packet = RoveComm.read();
 
   /** Call the function getVescValues() to acquire data from VESC */
-  if ( UART5.getVescValues() ) {
+  if ( UART4.getVescValues() ) {
 
-    Serial.println(UART5.data.rpm);
-    Serial.println(UART5.data.inpVoltage);
-    Serial.println(UART5.data.ampHours);
-    Serial.println(UART5.data.tachometerAbs);
+    Serial.println("RPM");
+    Serial.println(UART4.data.rpm);/*
+    Serial.println("Voltage");
+    Serial.println(UART4.data.inpVoltage);
+    Serial.println("AMpsH");
+    Serial.println(UART4.data.ampHours);
+    Serial.println("TABS");
+    Serial.println(UART4.data.tachometerAbs);*/
   }
   else
   {
@@ -91,6 +95,7 @@ void loop() {
       int16_t leftspeed =  map(speeds[0],-1000,1000,DRIVE_MIN_RPM,DRIVE_MAX_RPM);
       int16_t rightspeed = map(speeds[1],-1000,1000,DRIVE_MIN_RPM,DRIVE_MAX_RPM);
 
+      Serial.println("Speeds");
       Serial.println(leftspeed);
       Serial.println(rightspeed);
 
