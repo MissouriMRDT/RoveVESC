@@ -1,7 +1,11 @@
 #ifndef _VESCUART_h
 #define _VESCUART_h
 
+#if defined(ENERGIA)
 #include <Energia.h>
+#elif defined(ARDUINO) && (ARDUINO>100)
+#include <Arduino.h>
+#endif
 #include "datatypes.h"
 #include "buffer.h"
 #include "crc.h"
