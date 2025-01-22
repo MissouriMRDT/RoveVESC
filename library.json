@@ -1,0 +1,22 @@
+{
+    "name": "RoveVESC",
+    "author": "MissouriMRDT",
+    "version": "1.0.0",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MissouriMRDT/RoveVESC.git"
+    },
+    "description": "Adaptation of VescUart library for MRDT's usage.",
+    "keywords": [
+        "rovevesc",
+        "mrdt"
+    ],
+    "frameworks": [
+        "arduino"
+    ],
+    "platforms": [
+        "titiva",
+        "teensy"
+    ],
+    "examples": []
+}
